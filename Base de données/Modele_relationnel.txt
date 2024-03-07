@@ -1,0 +1,2 @@
+User (User_ID, First_name, Last_name, Username, Email, Password, Is_admin, Registration_date)
+Game (Game_ID, Board, Last_move, Is_over, Player1_ID*, Player2_ID, Winner_ID*, Active_player_ID*, Launcher_ID*, Launch_Date*)
