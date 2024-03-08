@@ -1,5 +1,5 @@
 <?php
-/*// Création ou récupération de la session
+// Création ou récupération de la session
 session_start();
 
 // On procède à l'inscription
@@ -40,11 +40,12 @@ if (!isset($_SESSION['username']) && isset($_POST['submit']) && isset($_POST['us
 if (isset($_SESSION['username']) || (isset($_POST['submit']) && isset($_POST['username']))) {
   header('Location: login.php');
   exit();
-}*/
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
+<<<<<<< HEAD
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -88,4 +89,51 @@ if (isset($_SESSION['username']) || (isset($_POST['submit']) && isset($_POST['us
     </form>
     <script src="../scripts/passwordValidation.js"></script>
   </body>
+=======
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inscription</title>
+  <link rel="stylesheet" href="../styles/enroll.css" />
+</head>
+
+<body>
+  <form action="" method="post">
+    <h2>Inscription</h2>
+    <div>
+      <label for="first_name">Prénom :</label>
+      <input type="text" name="first_name" required />
+    </div>
+    <div>
+      <label for="last_name">Nom :</label>
+      <input type="text" name="last_name" required />
+    </div>
+    <div>
+      <label for="username">Nom d'utilisateur :</label>
+      <input type="text" name="username" required />
+    </div>
+    <div>
+      <label for="email">Email :</label>
+      <input type="email" name="email" required />
+    </div>
+    <div>
+      <label for="password">Mot de passe :</label>
+      <input type="password" name="password" required />
+    </div>
+    <div>
+      <label for="confirm_password">Confirmez le mot de passe :</label>
+      <input type="password" name="confirm_password" required />
+    </div>
+    <input type="submit" name="submit" value="S'inscrire" />
+    <div>
+      <p>Déjà un compte ?</p>
+      <button onclick="window.location.href='login.php'">
+        Connectez-vous
+      </button>
+    </div>
+  </form>
+</body>
+
+>>>>>>> 3d94a3e0348806c49d16c6017ce550eaaa9cf760
 </html>
