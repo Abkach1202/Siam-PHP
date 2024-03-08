@@ -13,22 +13,22 @@ if (!isset($_SESSION['username']) && isset($_POST['submit']) && isset($_POST['us
     exit();
   }
   // On remplit la session avec les informations de l'utilisateur
+  $_SESSION['username'] = $_POST['username'];
   $_SESSION['first_name'] = $_POST['first_name'];
   $_SESSION['last_name'] = $_POST['last_name'];
-  $_SESSION['username'] = $_POST['username'];
   $_SESSION['email'] = $_POST['email'];
   $_SESSION['is_admin'] = 0;
   $_SESSION['registration_date'] = date('Y-m-d H:i:s');
   // Hashage du mot de passe
   $hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
   // la requête SQL à executer
-  $query = "INSERT INTO User (First_name, Last_name, Username, Email, Password, Is_admin, Registration_date) 
-      VALUES (:first_name, :last_name, :username, :email, :password, 0, datetime('now'))";
+  $query = "INSERT INTO User (username, first_name, last_name, email, password, is_admin, registration_date) 
+      VALUES (:username, :first_name, :last_name, :email, :password, 0, datetime('now'))";
   // Préparation de la déclaration SQL
   $stmt = $db->prepare($query);
+  $stmt->bindValue(':username', $_POST['username'], SQLITE3_TEXT);
   $stmt->bindValue(':first_name', $_POST['first_name'], SQLITE3_TEXT);
   $stmt->bindValue(':last_name', $_POST['last_name'], SQLITE3_TEXT);
-  $stmt->bindValue(':username', $_POST['username'], SQLITE3_TEXT);
   $stmt->bindValue(':email', $_POST['email'], SQLITE3_TEXT);
   $stmt->bindValue(':password', $hashed_password, SQLITE3_TEXT);
   // Exécution de la requête

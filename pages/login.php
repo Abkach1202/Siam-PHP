@@ -21,9 +21,9 @@ if (!isset($_SESSION['username']) && isset($_POST['submit']) && isset($_POST['us
   // Récupération du résultat de la requête
   $result = $stmt->fetch(PDO::FETCH_ASSOC);
   // On remplit la session avec les informations de l'utilisateur
+  $_SESSION['username'] = $result['username'];
   $_SESSION['first_name'] = $result['first_name'];
   $_SESSION['last_name'] = $result['last_name'];
-  $_SESSION['username'] = $result['username'];
   $_SESSION['email'] = $result['email'];
   $_SESSION['is_admin'] = $result['is_admin'];
   $_SESSION['registration_date'] = $result['registration_date'];
