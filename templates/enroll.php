@@ -4,7 +4,7 @@ $db = new SQLite3('path/to/your/database.db');
 
 // Vérifier la connexion
 if (!$db) {
-    die("La connexion à la base de données a échoué");
+  die("La connexion à la base de données a échoué");
 }
 
 // Récupérer les données du formulaire
@@ -17,8 +17,8 @@ $confirm_password = $_POST['confirm_password'];
 
 // Vérifier si les mots de passe correspondent
 if ($password != $confirm_password) {
-    echo "Les mots de passe ne correspondent pas";
-    exit;
+  echo "Les mots de passe ne correspondent pas";
+  exit;
 }
 
 // Hasher le mot de passe
@@ -26,7 +26,7 @@ $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // Préparer la requête SQL
 $query = "INSERT INTO User (First_name, Last_name, Username, Email, Password, Is_admin, Registration_date) 
-          VALUES (:first_name, :last_name, :username, :email, :password, 0, datetime('now'))";
+      VALUES (:first_name, :last_name, :username, :email, :password, 0, datetime('now'))";
 
 // Préparer la déclaration SQL
 $stmt = $db->prepare($query);
@@ -40,9 +40,9 @@ $stmt->bindValue(':password', $hashed_password, SQLITE3_TEXT);
 $result = $stmt->execute();
 
 if ($result) {
-    echo "Inscription réussie!";
+  echo "Inscription réussie!";
 } else {
-    echo "Erreur lors de l'inscription";
+  echo "Erreur lors de l'inscription";
 }
 
 // Fermer la connexion à la base de données
