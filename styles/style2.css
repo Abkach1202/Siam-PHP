@@ -36,7 +36,7 @@ aside {
   row-gap: 20px;
 }
 
-.titles {
+h2 {
   padding: 10px 0;
   border-bottom: 1px solid #505050;
   box-sizing: border-box;

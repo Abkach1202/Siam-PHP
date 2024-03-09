@@ -41,7 +41,7 @@ if (isset($_SESSION['username']) || isset($_POST['username'])) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
-  <link rel="stylesheet" href="../styles/login.css" />
+  <link rel="stylesheet" href="../styles/style1.css" />
   <script src="../scripts/login.js"></script>
 </head>
 

@@ -46,7 +46,7 @@ if (isset($_SESSION['username']) || isset($_POST['username'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Enroll</title>
-    <link rel="stylesheet" href="../styles/enroll.css" />
+    <link rel="stylesheet" href="../styles/style1.css" />
     <script src="../scripts/enroll.js"></script>
   </head>
   <body>

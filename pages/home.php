@@ -33,13 +33,13 @@ if (isset($_SESSION['username'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accueil Siam</title>
-  <link rel="stylesheet" href="../styles/home.css">
+  <link rel="stylesheet" href="../styles/style2.css">
 </head>
 
 <body>
@@ -50,55 +50,51 @@ if (isset($_SESSION['username'])) {
   </header>
   <section>
     <div>
-      <h2 class="titles">Présentation</h2>
+      <h2>Présentation</h2>
       <p>Le jeu de Siam est un jeu de société pour deux joueurs. Il a été créé par Bruno Cathala et Bruno Faidutti en 2005. Le jeu se joue sur un plateau de 5x5 cases. Chaque joueur possède 5 éléphants et 1 montagne. Le but du jeu est de pousser la montagne adverse hors du plateau ou de placer un de ses éléphants sur la montagne adverse.</p>
       <button id="rules">Voir les règles</button>
     </div>
     <div>
-      <h2 class="titles">
+      <h2>
         Parties à jouer
         <button class="viewAll" onclick="window.location.href='joined_games.php'">Voir tout</button>
       </h2>
       <?php
       echo "<table>";
       echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Joueur actif</th><th>Gagnant</th></tr>";
-      if (isset($_SESSION['username'])) {
-        foreach ($play_results as $row) {
-          echo "<tr>";
-          echo "<td>{$row['id']}</td>";
-          echo "<td>{$row['player1']}" . ($row['player1'] == $row['launcher']) ? "(créateur)" : "" . "</td>";
-          echo "<td>{$row['player2']}" . ($row['player2'] == $row['launcher']) ? "(créateur)" : "" . "</td>";
-          echo "<td>{$row['active_player']}</td>";
-          echo "<td>{$row['winner']}</td>";
-          echo "</tr>";
-        }
+      foreach ($play_results as $row) {
+        echo "<tr>";
+        echo "<td>{$row['id']}</td>";
+        echo "<td>{$row['player1']}" . ($row['player1'] == $row['launcher']) ? "(créateur)" : "" . "</td>";
+        echo "<td>{$row['player2']}" . ($row['player2'] == $row['launcher']) ? "(créateur)" : "" . "</td>";
+        echo "<td>{$row['active_player']}</td>";
+        echo "<td>{$row['winner']}</td>";
+        echo "</tr>";
       }
       echo "</table>";
       ?>
     </div>
     <div>
-      <h2 class="titles">
+      <h2>
         Parties à rejoindre
         <button class="viewAll" onclick="window.location.href='available_games.php'">Voir tout</button>
       </h2>
       <?php
       echo "<table>";
       echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Date de lancement</th></tr>";
-      if (isset($_SESSION['username'])) {
-        foreach ($join_results as $row) {
-          echo "<tr>";
-          echo "<td>{$row['id']}</td>";
-          echo "<td>{$row['player1']}</td>";
-          echo "<td>{$row['player2']}</td>";
-          echo "<td>{$row['launch_date']}</td>";
-          echo "</tr>";
-        }
+      foreach ($join_results as $row) {
+        echo "<tr>";
+        echo "<td>{$row['id']}</td>";
+        echo "<td>{$row['player1']}</td>";
+        echo "<td>{$row['player2']}</td>";
+        echo "<td>{$row['launch_date']}</td>";
+        echo "</tr>";
       }
       echo "</table>";
       ?>
     </div>
     <div>
-      <h2 class="titles">Gestion de parties</h2>
+      <h2>Gestion de parties</h2>
       <div id="manage_games">
         <form method="post">
           <select name="player">
@@ -114,17 +110,16 @@ if (isset($_SESSION['username'])) {
     </div>
   </section>
   <aside>
-    <button><?php if (isset($_SESSION['username'])) echo "Compte";
-            else echo "Se Connecter"; ?></button>
+    <button onclick="window.location.href='account.php'">Compte</button>
     <div>
-      <?php if (isset($_SESSION['username'])) {
-        echo "<p><strong>Pseudo:</strong> {$_SESSION['username']}</p>";
-        echo "<p><strong>Nom:</strong> {$_SESSION['last_name']}</p>";
-        echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
-        echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
-        echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
-        echo "<button class='red_buttons' onclick=\"window.location.href='logout.php'\">Deconnexion</button>";
-      } ?>
+      <?php
+      echo "<p><strong>Pseudo:</strong> {$_SESSION['username']}</p>";
+      echo "<p><strong>Nom:</strong> {$_SESSION['last_name']}</p>";
+      echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
+      echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
+      echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
+      echo "<button class='red_buttons' onclick=\"window.location.href='logout.php'\">Deconnexion</button>";
+      ?>
     </div>
   </aside>
 </body>
