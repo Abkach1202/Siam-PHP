@@ -72,8 +72,8 @@ if (isset($_SESSION['username'])) {
       echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
       echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
       echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
-      echo "<button class='red_buttons' onclick=\"window.location.href='logout.php'\">Deconnexion</button>";
       ?>
+      <button class='red_buttons' onclick="window.location.href='logout.php'">Deconnexion</button>
     </div>
   </aside>
 </body>
