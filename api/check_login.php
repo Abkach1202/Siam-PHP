@@ -15,7 +15,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
   // Renvoi de la réponse
-  if ($user != FALSE && password_verify($_POST['password'], $user['password'])) {
+  if ($user != FALSE && password_verify($_POST['password'], $user['Password'])) {
     echo "true";
   } else {
     echo "false";

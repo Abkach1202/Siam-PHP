@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS User (
   first_name TEXT,
   last_name TEXT,
   email TEXT,
-  Password TEXT,
+  password TEXT,
   is_admin BOOLEAN,
   registration_date DATE
 );
