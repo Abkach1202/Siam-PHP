@@ -1,7 +1,6 @@
 <?php
 // Création ou récupération de la session
 session_start();
-
 // Recuperation des parties à jouer et à rejoindre
 if (isset($_SESSION['username'])) {
   // Connexion à la base de données SQLite
@@ -14,18 +13,21 @@ if (isset($_SESSION['username'])) {
   }
   // Exécution  et récupération des parties à rejoindre
   $query = "SELECT * FROM Game WHERE player1 IS NULL OR player2 IS NULL ORDER BY launch_date DESC LIMIT 5";
-  $join_results = $db->query($query);
-  $join_results = $join_results->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $db->query($query);
+  $join_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   // Exécution  et récupération des parties à jouer
   $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC LIMIT 5";
-  $play_results = $db->prepare($query);
-  $play_results->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
-  $play_results->execute();
-  $play_results = $play_results->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $db->prepare($query);
+  $stmt->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
+  $stmt->execute();
+  $play_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   // Fermeture de la connexion à la base de données
   $db = null;
+} else {
+  header('Location: login.php');
+  exit();
 }
 
 ?>
@@ -53,12 +55,37 @@ if (isset($_SESSION['username'])) {
       <button id="rules">Voir les règles</button>
     </div>
     <div>
-      <h2 class="titles">Parties à jouer<button class="viewAll">Voir tout</button></h2>
+      <h2 class="titles">
+        Parties à jouer
+        <button class="viewAll" onclick="window.location.href='joined_games.php'">Voir tout</button>
+      </h2>
       <?php
+      echo "<table>";
+      echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Joueur actif</th><th>Gagnant</th></tr>";
       if (isset($_SESSION['username'])) {
-        echo "<table>";
-        echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Date de lancement</th></tr>";
         foreach ($play_results as $row) {
+          echo "<tr>";
+          echo "<td>{$row['id']}</td>";
+          echo "<td>{$row['player1']}" . ($row['player1'] == $row['launcher']) ? "(créateur)" : "" . "</td>";
+          echo "<td>{$row['player2']}" . ($row['player2'] == $row['launcher']) ? "(créateur)" : "" . "</td>";
+          echo "<td>{$row['active_player']}</td>";
+          echo "<td>{$row['winner']}</td>";
+          echo "</tr>";
+        }
+      }
+      echo "</table>";
+      ?>
+    </div>
+    <div>
+      <h2 class="titles">
+        Parties à rejoindre
+        <button class="viewAll" onclick="window.location.href='available_games.php'">Voir tout</button>
+      </h2>
+      <?php
+      echo "<table>";
+      echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Date de lancement</th></tr>";
+      if (isset($_SESSION['username'])) {
+        foreach ($join_results as $row) {
           echo "<tr>";
           echo "<td>{$row['id']}</td>";
           echo "<td>{$row['player1']}</td>";
@@ -66,33 +93,14 @@ if (isset($_SESSION['username'])) {
           echo "<td>{$row['launch_date']}</td>";
           echo "</tr>";
         }
-        echo "</table>";
       }
+      echo "</table>";
       ?>
     </div>
     <div>
-      <h2 class="titles">Parties à rejoindre<button class="viewAll">Voir tout</button></h2>
-      <?php
-      if (isset($_SESSION['username'])) {
-        echo "<table>";
-        echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Joueur actif</th><th>Gagnant</th></tr>";
-        foreach ($join_results as $row) {
-          echo "<tr>";
-          echo "<td>{$row['id']}</td>";
-          echo "<td>{$row['player1']}</td>";
-          echo "<td>{$row['player2']}</td>";
-          echo "<td>{$row['active_player']}</td>";
-          echo "<td>{$row['winner']}</td>";
-          echo "</tr>";
-        }
-        echo "</table>";
-      }
-      ?>
-    </div>
-    <div>
-      <h2 class="titles">Gestion des parties</h2>
+      <h2 class="titles">Gestion de parties</h2>
       <div id="manage_games">
-        <form>
+        <form method="post">
           <select name="player">
             <option value="player1">Joueur 1</option>
             <option value="player2">Joueur 2</option>
@@ -115,7 +123,7 @@ if (isset($_SESSION['username'])) {
         echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
         echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
         echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
-        echo "<button class='red_buttons'>Deconnexion</button>";
+        echo "<button class='red_buttons' onclick=\"window.location.href='logout.php'\">Deconnexion</button>";
       } ?>
     </div>
   </aside>
