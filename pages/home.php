@@ -52,7 +52,7 @@ if (isset($_SESSION['username'])) {
     <div>
       <h2>Présentation</h2>
       <p>Le jeu de Siam est un jeu de société pour deux joueurs. Il a été créé par Bruno Cathala et Bruno Faidutti en 2005. Le jeu se joue sur un plateau de 5x5 cases. Chaque joueur possède 5 éléphants et 1 montagne. Le but du jeu est de pousser la montagne adverse hors du plateau ou de placer un de ses éléphants sur la montagne adverse.</p>
-      <button id="rules">Voir les règles</button>
+      <button id="rules" onclick="window.location.href='rules.php'">Voir les règles</button>
     </div>
     <div>
       <h2>
