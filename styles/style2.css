@@ -84,7 +84,7 @@ button:hover {
   width: 20%;
 }
 
-.viewAll {
+.small_buttons {
   width: 10%;
   margin-left: 10%;
 }
@@ -93,13 +93,13 @@ button:hover {
   background-color: #f11329;
 }
 
-#manage_games > button {
-  height: 50%;
-  width: 30%;
+.red_buttons:hover {
+  background-color: #b00f23;
 }
 
-.red_buttons {
-  background-color: #d10f24;
+#forms > button {
+  height: 50px;
+  width: 30%;
 }
 
 aside > div {
@@ -109,7 +109,7 @@ aside > div {
   border-radius: 5px;
 }
 
-#manage_games {
+#forms {
   display: flex;
   align-items: center;
   justify-content: space-around;

@@ -12,11 +12,11 @@ if (isset($_SESSION['username'])) {
     exit();
   }
   // Exécution  et récupération des parties à jouer
-  $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC";
+  $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username";
   $stmt = $db->prepare($query);
   $stmt->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
   $stmt->execute();
-  $play_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $all_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   // Fermeture de la connexion à la base de données
   $db = null;
@@ -35,6 +35,13 @@ if (isset($_SESSION['username'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Votre compte</title>
   <link rel="stylesheet" href="../styles/style2.css">
+  <style>
+    section>div {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-auto-rows: auto;
+    }
+  </style>
 </head>
 
 <body>
@@ -44,8 +51,8 @@ if (isset($_SESSION['username'])) {
     <h1>Votre compte</h1>
   </header>
   <section>
+    <h2>Information de compte</h2>
     <div>
-      <h2>Information de compte</h2>
       <?php
       echo "<p><strong>Pseudo :</strong> {$_SESSION['username']}</p>";
       echo "<p><strong>Nom :</strong> {$_SESSION['last_name']}</p>";
@@ -55,9 +62,26 @@ if (isset($_SESSION['username'])) {
       echo "<p><strong>Mot de passe :</strong> *****</p>";
       echo "<p><strong>Date d'inscription :</strong> {$_SESSION['registration_date']}</p>";
       ?>
+      <button onclick="window.location.href='change.php'">Modifier les informations</button>
     </div>
+    <h2>Statistiques</h2> 
     <div>
-      <h2>Statistiques</h2>
+      <?php
+      echo "<p><strong>Parties jouées :</strong> " . count($all_games) . "</p>";
+      $victories = 0;
+      $not_finished = 0;
+      foreach ($all_games as $game) {
+        if ($game['winner'] == $_SESSION['username']) {
+          $victories++;
+        }
+        if ($game['is_over'] == 0) {
+          $not_finished++;
+        }
+      }
+      echo "<p><strong>Parties gagnées :</strong> $victories</p>";
+      echo "<p><strong>Parties perdues :</strong> " . (count($all_games) - $victories) . "</p>";
+      echo "<p><strong>Parties en cours :</strong> $not_finished</p>";
+      ?>
     </div>
   </section>
   <aside>
@@ -68,8 +92,8 @@ if (isset($_SESSION['username'])) {
       echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
       echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
       echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
-      echo "<button class='red_buttons' onclick=\"window.location.href='logout.php'\">Deconnexion</button>";
       ?>
+      <button class='red_buttons' onclick="window.location.href='logout.php'">Deconnexion</button>
     </div>
   </aside>
 </body>

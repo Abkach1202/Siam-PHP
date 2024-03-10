@@ -17,7 +17,11 @@ if (isset($_SESSION['username'])) {
   $join_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   // Exécution  et récupération des parties à jouer
-  $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC LIMIT 5";
+  if ($_SESSION['is_admin'] == 1) {
+    $query = "SELECT * FROM Game ORDER BY launch_date DESC LIMIT 5";
+  } else {
+    $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC LIMIT 5";
+  }
   $stmt = $db->prepare($query);
   $stmt->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
   $stmt->execute();
@@ -57,7 +61,7 @@ if (isset($_SESSION['username'])) {
     <div>
       <h2>
         Parties à jouer
-        <button class="viewAll" onclick="window.location.href='joined_games.php'">Voir tout</button>
+        <button class="small_buttons" onclick="window.location.href='joined_games.php'">Voir tout</button>
       </h2>
       <?php
       echo "<table>";
@@ -77,7 +81,7 @@ if (isset($_SESSION['username'])) {
     <div>
       <h2>
         Parties à rejoindre
-        <button class="viewAll" onclick="window.location.href='available_games.php'">Voir tout</button>
+        <button class="small_buttons" onclick="window.location.href='available_games.php'">Voir tout</button>
       </h2>
       <?php
       echo "<table>";
@@ -95,7 +99,7 @@ if (isset($_SESSION['username'])) {
     </div>
     <div>
       <h2>Gestion de parties</h2>
-      <div id="manage_games">
+      <div id="forms">
         <form method="post">
           <select name="player">
             <option value="player1">Joueur 1</option>
@@ -118,8 +122,8 @@ if (isset($_SESSION['username'])) {
       echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
       echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
       echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
-      echo "<button class='red_buttons' onclick=\"window.location.href='logout.php'\">Deconnexion</button>";
       ?>
+      <button class='red_buttons' onclick="window.location.href='logout.php'">Deconnexion</button>
     </div>
   </aside>
 </body>
