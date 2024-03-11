@@ -82,7 +82,7 @@ if (!isset($_SESSION['username'])) {
       <li>Aucun des 2 joueurs ne pourra jouer un de ses animaux sur les cases indiquées par une croix à la fig. 10 lors de leurs deux premiers coups.</li>
       <li>Vous pouvez limiter à une fois par joueur la sortie d'un animal disposé sur une case extérieure(fig. 2).</li>
     </ul>
-    <img src="../images/rulesSiam.jpg" alt="régles du jeu Siam">
+    <img src="../images/rules_siam.jpg" alt="régles du jeu Siam">
     <p>AUTHOR : Didier Dhorbait - <a href="http://www.ferti-games.com">www.ferti-games.com</a></p>
   </section>
 

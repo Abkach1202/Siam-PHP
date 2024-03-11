@@ -1,7 +1,7 @@
 <?php
 // Création ou récupération de la session
 session_start();
-// Recuperation des parties à jouer et à rejoindre
+// Recupération des parties à jouer et à rejoindre
 if (isset($_SESSION['username'])) {
   // Connexion à la base de données SQLite
   try {
@@ -82,7 +82,7 @@ if (isset($_SESSION['username'])) {
     echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
     echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
     ?>
-    <button class='red_buttons' onclick="window.location.href='logout.php'">Deconnexion</button>
+    <button class='red_buttons' onclick="window.location.href='../api/logout.php'">Deconnexion</button>
     </div>
   </aside>
 </body>
