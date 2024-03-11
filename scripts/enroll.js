@@ -1,7 +1,7 @@
 // Fonction pour vérifier si l'utilisateur existe déjà
 function checkUser() {
   var username = document.getElementById("username").value;
-  return fetch("http://localhost:8080/api/check_user.php?username=" + username)
+  return fetch("http://localhost:8080/api/projet-siam/check_user.php?username=" + username)
     .then(response => response.text())
     .then(response => {
       // Si l'utilisateur existe déjà, on change la couleur de la bordure du champ
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(results => {
         // Si tous les résultats sont vrais, on soumet le formulaire
         if (results.every(result => result)) {
-          //form.submit();
+          form.submit();
         }
       })
       .catch(error => console.error(error));

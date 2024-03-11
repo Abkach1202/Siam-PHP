@@ -7,7 +7,7 @@ function checkUser() {
     method: "POST",
     body: datas,
   };
-  return fetch("http://localhost:8080/api/check_login.php", requestOptions)
+  return fetch("http://localhost:8080/api/projet-siam/check_login.php", requestOptions)
     .then(response => response.text())
     .then(response => {
       // Si l'utilisateur et le mode de passe ne correspondent pas, on change la couleur de la bordure du champ
