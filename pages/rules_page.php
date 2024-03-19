@@ -3,7 +3,7 @@
 session_start();
 // Redirection si le joueur n'est pas connecté
 if (!isset($_SESSION['username'])) {
-  header('Location: login.php');
+  header('Location: login_page.php');
   exit();
 }
 ?>
@@ -20,9 +20,9 @@ if (!isset($_SESSION['username'])) {
 
 <body>
   <header>
-    <a href="home.php"><img src="../images/siam.jpeg" alt="image du jeu Siam"></a>
+    <a href="home_page.php"><img src="../images/siam.jpeg" alt="image du jeu Siam"></a>
     <h1>Un jeu de société pour deux joueurs</h1>
-    <h1>Page d'accueil</h1>
+    <h1>Règles du jeu</h1>
   </header>
   <section>
     <h2>Siam</h2>
@@ -86,7 +86,7 @@ if (!isset($_SESSION['username'])) {
     <p>AUTHOR : Didier Dhorbait - <a href="http://www.ferti-games.com">www.ferti-games.com</a></p>
   </section>
   <aside>
-    <button onclick="window.location.href='account.php'">Compte</button>
+    <button onclick="window.location.href='account_page.php'">Compte</button>
     <div>
       <?php
       echo "<p><strong>Pseudo:</strong> {$_SESSION['username']}</p>";
@@ -95,8 +95,13 @@ if (!isset($_SESSION['username'])) {
       echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
       echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
       ?>
-      <button class='red_buttons' onclick="window.location.href='../api/logout.php'">Deconnexion</button>
+      <button class='red_buttons' onclick="window.location.href='../api/logout_api.php'">Deconnexion</button>
     </div>
+    <?php
+    if ($_SESSION['is_admin']) {
+      echo "<button onclick=\"window.location.href='enroll_page.php'\">Creer un compte joueur</button>";
+    }
+    ?>
   </aside>
 </body>
 

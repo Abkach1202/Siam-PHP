@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const CELL_SIZE = 80;
   const THICKNESS = 3;
   const BOARD_DIM = 5;
+  const lesDirections = { "0": "Nord", "1": "Ouest", "2": "Sud", "3": "Est" };
 
   // Récupération des éléments du DOM
   const game_canvas = document.getElementById("game_canvas");
@@ -13,11 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const turn_button = document.getElementById("turn");
   const remove_button = document.getElementById("remove");
   const board = JSON.parse(document.getElementById("board").value);
-  const current_player = document.getElementById("current_player").value;
-  const active_player = document.getElementById("active_player").value;
-  const player_number = document.getElementById("player_number").value;
-  const is_admin = document.getElementById("is_admin").value;
-  const is_over = document.getElementById("is_over").value;
+  const is_player_turn = document.getElementById("is_player_turn");
+  const player_number = document.getElementById("player_number");
+  const is_admin = document.getElementById("is_admin");
+  const is_over = document.getElementById("is_over");
   const form = document.forms[0];
 
   // Récupération des éléments modifiables
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Fonction pour savoir si le joueur a le droit de jouer
   function isPlayerTurn() {
-    return is_over === "0" && (current_player === active_player || is_admin === "1");
+    return is_over.value === "0" && (is_player_turn.value === "1" || is_admin.value === "1");
   }
 
   // Fonction pour compter le nombre de pièces d'un joueur sur le plateau
@@ -99,23 +99,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // Colorier sur le plateau de jeu
     for (let i = 0; i < BOARD_DIM; i++)
       for (let j = 0; j < BOARD_DIM; j++)
-        if (board[i][j] !== "" && board[i][j][0] === player_number)
+        if (board[i][j] !== "" && board[i][j][0] === player_number.value)
           colorCase(i, j, "#22BB22", game_canvas.getContext("2d"));
     // Colorier sur le plateau du joueur
-    for (let i = 0; i < BOARD_DIM - countPlayerPieces(player_number); i++)
+    for (let i = 0; i < BOARD_DIM - countPlayerPieces(player_number.value); i++)
       colorCase(0, i, "#22BB22", player_canvas.getContext("2d"));
     colorLastMove();
   }
-  
+
   // Fonction pour enlever les couleurs des cases cliquables sur les plateaux
   function removeColorSources() {
     // Enleve les couleurs sur le plateau de jeu
     for (let i = 0; i < BOARD_DIM; i++)
       for (let j = 0; j < BOARD_DIM; j++)
-        if (board[i][j] !== "" && board[i][j][0] === player_number)
+        if (board[i][j] !== "" && board[i][j][0] === player_number.value)
           removeColor(i, j, game_canvas.getContext("2d"));
     // Enleve les couleurs sur le plateau du joueur
-    for (let i = 0; i < BOARD_DIM - countPlayerPieces(player_number); i++)
+    for (let i = 0; i < BOARD_DIM - countPlayerPieces(player_number.value); i++)
       removeColor(0, i, player_canvas.getContext("2d"));
   }
 
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "POST",
       body: datas,
     };
-    const response = await fetch("../api/check_action.php", requestOptions);
+    const response = await fetch("../api/check_action_api.php", requestOptions);
     return response.json();
   }
 
@@ -164,6 +164,22 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Fonction pour gérer le survol de la souris sur le canvas du jeu
+  function hoverCell(event) {
+    const mouseX = event.clientX - this.getBoundingClientRect().left;
+    const mouseY = event.clientY - this.getBoundingClientRect().top;
+    const row = Math.floor(mouseY / CELL_SIZE);
+    const col = Math.floor(mouseX / CELL_SIZE);
+    if (row < 0 || row >= BOARD_DIM || col < 0 || col >= BOARD_DIM) return;
+    if ((destinations.length === 0 && board[row][col][0] === player_number.value) ||
+      (destinations.length !== 0 && destinations.some(x => x[0] === row && x[1] === col))) {
+      game_canvas.style.cursor = "pointer";
+    }
+    else {
+      game_canvas.style.cursor = "default";
+    }
+  }
+
   // Fonction pour gerer le clic sur le canvas du jeu
   function clickCell(event) {
     // Vérifier si c'est le tour du joueur
@@ -174,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const col = Math.floor(mouseX / CELL_SIZE);
 
     // Si aucune destination n'est définie, on affiche les déplacements possibles
-    if (destinations.length === 0 && board[row][col] !== "" && board[row][col][0] === player_number) {
+    if (destinations.length === 0 && board[row][col][0] === player_number.value) {
       removeColorSources();
       displayValidMoves(row, col);
       direction.value = board[row][col][1];
@@ -185,7 +201,8 @@ document.addEventListener("DOMContentLoaded", function () {
         remove_button.disabled = false;
     }
     // Sinon, on vérifie si la case cliquée est une destination et on soumet le formulaire
-    else if (destinations.length !== 0 && destinations.some(x => x[0] === row && x[1] === col)) {
+    else if (destinations.length !== 0 && destinations.some(x => x[0] === row && x[1] === col) &&
+      confirm("Voulez-vous vraiment déplacer cette pièce à la position (" + row + "," + col + ") ?")) {
       destination.value = JSON.stringify([row, col]);
       if (clickedCell.length !== 0) {
         source.value = JSON.stringify(clickedCell);
@@ -198,6 +215,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Fonction pour gérer le survol de la souris sur le canvas du joueur
+  function hoverPlayer(event) {
+    const mouseX = event.clientX - this.getBoundingClientRect().left;
+    const col = Math.floor(mouseX / CELL_SIZE);
+    if (col > 0 && col < BOARD_DIM - countPlayerPieces(player_number.value)) {
+      player_canvas.style.cursor = "pointer";
+    }
+    else {
+      player_canvas.style.cursor = "default";
+    }
+  }
+
   // Fonction pour gerer le clic sur le canvas du joueur
   function clickPlayer(event) {
     // Si des destinations sont déjà définies ou si ce n'est pas le tour du joueur, on ne fait rien
@@ -205,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const mouseX = event.clientX - this.getBoundingClientRect().left;
     const col = Math.floor(mouseX / CELL_SIZE);
     // On vérifie si on doit considérer le clic
-    if (col < BOARD_DIM - countPlayerPieces(player_number)) {
+    if (col > 0 && col < BOARD_DIM - countPlayerPieces(player_number.value)) {
       removeColorSources();
       displayValidAdd();
       cancel_button.disabled = false;
@@ -216,21 +245,27 @@ document.addEventListener("DOMContentLoaded", function () {
   function turnPiece(event) {
     event.preventDefault();
     // On ne fait rien si la direction est la même
-    if (board[clickedCell[0]][clickedCell[1]][1] === direction) {
+    if (board[clickedCell[0]][clickedCell[1]][1] === direction.value) {
       alert("La pièce est déjà dans cette direction");
       return;
     }
-    source.value = JSON.stringify(clickedCell);
-    action.value = "turn";
-    form.submit();
+    // On demande confirmation avant de tourner la pièce
+    if (confirm("Voulez-vous vraiment tourner cette pièce vers " + lesDirections[direction.value] + " ?")) {
+      source.value = JSON.stringify(clickedCell);
+      action.value = "turn";
+      form.submit();
+    }
   }
 
   // Fonction pour enlever une pièce
   function removePiece(event) {
     event.preventDefault();
-    source.value = JSON.stringify(clickedCell);
-    action.value = "remove";
-    form.submit();
+    // On demande confirmation avant de retirer la pièce
+    if (confirm("Voulez-vous vraiment retirer cette pièce ?")) {
+      source.value = JSON.stringify(clickedCell);
+      action.value = "remove";
+      form.submit();
+    }
   }
 
   // Fonction pour annuler la sélection
@@ -242,6 +277,8 @@ document.addEventListener("DOMContentLoaded", function () {
     clickedCell = [];
     colorSources();
     cancel_button.disabled = true;
+    turn_button.disabled = true;
+    remove_button.disabled = true;
   }
 
   // Fonction pour gérer le changement de direction
@@ -258,17 +295,29 @@ document.addEventListener("DOMContentLoaded", function () {
   // Dessin du plateau de jeu
   drawGameBoard();
   // Dessin des plateau des joueur
-  drawPlayerBoard(player_canvas.getContext("2d"), player_number, "0");
-  drawPlayerBoard(opponent_canvas.getContext("2d"), String(player_number % 2 + 1), "2");
+  drawPlayerBoard(player_canvas.getContext("2d"), player_number.value, "0");
+  drawPlayerBoard(opponent_canvas.getContext("2d"), String(player_number.value % 2 + 1), "2");
   // Mise en évicence des cases cliquables
   if (isPlayerTurn()) colorSources();
   else colorLastMove();
 
-  // Gestionnaire d'événements pour les clics
+  // Gestionnaire d'événements pour les clics et les survols
   game_canvas.addEventListener("click", clickCell);
+  game_canvas.addEventListener('mouseenter', function (event) {
+    game_canvas.addEventListener('mousemove', hoverCell);
+  });
+  game_canvas.addEventListener('mouseleave', function (event) {
+    game_canvas.removeEventListener('mousemove', hoverCell);
+  });
   player_canvas.addEventListener("click", clickPlayer);
+  player_canvas.addEventListener('mouseenter', function (event) {
+    player_canvas.addEventListener('mousemove', hoverPlayer);
+  });
+  player_canvas.addEventListener('mouseleave', function (event) {
+    player_canvas.removeEventListener('mousemove', hoverPlayer);
+  });
   cancel_button.addEventListener("click", cancelSelection);
-  turn_button.addEventListener("click", turnPiece);
-  remove_button.addEventListener("click", removePiece);
-  direction.addEventListener("change", direction_changed);
+  if (turn_button) turn_button.addEventListener("click", turnPiece);
+  if (remove_button) remove_button.addEventListener("click", removePiece);
+  if (direction) direction.addEventListener("change", direction_changed);
 });

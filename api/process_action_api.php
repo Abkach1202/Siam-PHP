@@ -3,7 +3,7 @@
 session_start();
 // Redirection si l'utilisateur n'est pas connecté
 if (!isset($_SESSION['username'])) {
-  header('Location: login.php');
+  header('Location: login_page.php');
   exit();
 }
 
@@ -24,6 +24,7 @@ if (isset($_POST['action'])) {
   $cell_src = json_decode($_POST['source']);
   $cell_dst = json_decode($_POST['destination']);
   $piece = "";
+  
   // Exécution de l'action
   if ($_POST['action'] == "turn") {
     $board[$cell_src[0]][$cell_src[1]] = $_POST['player_number'] . $_POST['direction'];
@@ -61,7 +62,7 @@ if (isset($_POST['action'])) {
   // Fermeture de la connexion à la base de données
   $db = null;
   // Redirection vers la page de la partie
-  header('Location: ../pages/game.php?id=' . $_POST['game_id']);
+  header('Location: ../pages/game_page.php?id=' . $_POST['game_id']);
 }
 
 // Fonction pour vérifier si les coordonnées sont valides

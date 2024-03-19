@@ -18,9 +18,7 @@ if (isset($_SESSION['username']) && $_SESSION['is_admin'] && isset($_POST['id'])
   $stmt->execute();
   // Fermeture de la connexion à la base de données
   $db = null;
-  header("Location: ../pages/delete_games.php");
-  exit();
+  header("Location: ../pages/delete_games_page.php");
 } else {
-  header('Location: ../pages/home.php');
-  exit();
+  header('Location: ../pages/home_page.php');
 }

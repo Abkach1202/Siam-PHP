@@ -23,7 +23,4 @@ if (isset($_POST['username'])) {
   // Fermeture de la connexion à la base de données
   $db = null;
 }
-else {
-  echo "La requête n'est pas valide.";
-}
 ?>

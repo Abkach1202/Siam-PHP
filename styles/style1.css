@@ -26,12 +26,16 @@ form {
   height: 80%;
 }
 
-input {
+input:not([type="radio"]) {
   width: 100%;
   padding: 2%;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+input[type="radio"] {
+  margin-left: 20px;
 }
 
 input[type="submit"] {

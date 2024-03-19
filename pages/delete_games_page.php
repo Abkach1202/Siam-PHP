@@ -2,7 +2,7 @@
 // Création ou récupération de la session
 session_start();
 // Recupération des parties à jouer et à rejoindre
-if (isset($_SESSION['username'])) {
+if (isset($_SESSION['username']) && $_SESSION['is_admin']) {
   // Connexion à la base de données SQLite
   try {
     $db = new PDO('sqlite:../datas/data_base.db');
@@ -11,22 +11,15 @@ if (isset($_SESSION['username'])) {
     $db = null;
     exit();
   }
-  // Exécution  et récupération des parties à jouer
-  if ($_SESSION['is_admin'] == 1) {
-    $query = "SELECT * FROM Game ORDER BY launch_date DESC";
-    $stmt = $db->prepare($query);
-  } else {
-    $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC";
-    $stmt = $db->prepare($query);
-    $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
-  }
-  $stmt->execute();
-  $play_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  // Exécution  et récupération des parties à rejoindre
+  $query = "SELECT * FROM Game ORDER BY launch_date DESC";
+  $stmt = $db->query($query);
+  $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   // Fermeture de la connexion à la base de données
   $db = null;
-} else {
-  header('Location: login.php');
+} else if (!$_SESSION['is_admin']){
+  header('Location: home_page.php');
   exit();
 }
 ?>
@@ -37,18 +30,18 @@ if (isset($_SESSION['username'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parties à jouer</title>
+  <title>Supprimer des parties</title>
   <link rel="stylesheet" href="../styles/style2.css">
 </head>
 
 <body>
   <header>
-    <a href="home.php"><img src="../images/siam.jpeg" alt="image du jeu Siam"></a>
+    <a href="home_page.php"><img src="../images/siam.jpeg" alt="image du jeu Siam"></a>
     <h1>Un jeu de société pour deux joueurs</h1>
-    <h1>Parties à jouer</h1>
+    <h1>Supprimer des parties</h1>
   </header>
   <section>
-    <h2>Liste des parties à jouer</h2>
+    <h2>Liste des parties à supprimer</h2>
     <?php
     echo "<table>";
     echo "<tr>";
@@ -60,7 +53,7 @@ if (isset($_SESSION['username'])) {
     echo "<th>Date de lancement</th>";
     echo "<th>Rejoindre</th>";
     echo "</tr>";
-    foreach ($play_results as $row) {
+    foreach ($games as $row) {
       echo "<tr>";
       echo "<td>{$row['game_ID']}</td>";
       echo "<td>{$row['player1']}" . (($row['player1'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
@@ -68,14 +61,18 @@ if (isset($_SESSION['username'])) {
       echo "<td>{$row['active_player']}</td>";
       echo "<td>{$row['winner']}</td>";
       echo "<td>{$row['launch_date']}</td>";
-      echo "<td><button onclick=\"window.location.href='game.php?id={$row['game_ID']}'\">Rejoindre</button></td>";
+      echo "<td>";
+      echo "<form action='../api/delete_game_api.php' method='post'>";
+      echo "<input type='hidden' name='id' value='{$row['game_ID']}'>";
+      echo "<button type='submit' class='red_buttons'>Supprimer</button></td>";
+      echo "</form>";
       echo "</tr>";
     }
     echo "</table>";
     ?>
   </section>
   <aside>
-    <button onclick="window.location.href='account.php'">Compte</button>
+    <button onclick="window.location.href='account_page.php'">Compte</button>
     <div>
       <?php
       echo "<p><strong>Pseudo:</strong> {$_SESSION['username']}</p>";
@@ -84,9 +81,13 @@ if (isset($_SESSION['username'])) {
       echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
       echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
       ?>
-      <button class='red_buttons' onclick="window.location.href='../api/logout.php'">Deconnexion</button>
+      <button class='red_buttons' onclick="window.location.href='../api/logout_api.php'">Deconnexion</button>
     </div>
-    </div>
+    <?php
+    if ($_SESSION['is_admin']) {
+      echo "<button onclick=\"window.location.href='enroll_page.php'\">Creer un compte joueur</button>";
+    }
+    ?>
   </aside>
 </body>
 

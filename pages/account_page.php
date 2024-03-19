@@ -21,7 +21,7 @@ if (isset($_SESSION['username'])) {
   // Fermeture de la connexion à la base de données
   $db = null;
 } else {
-  header('Location: login.php');
+  header('Location: login_page.php');
   exit();
 }
 
@@ -46,7 +46,7 @@ if (isset($_SESSION['username'])) {
 
 <body>
   <header>
-    <a href="home.php"><img src="../images/siam.jpeg" alt="image du jeu Siam"></a>
+    <a href="home_page.php"><img src="../images/siam.jpeg" alt="image du jeu Siam"></a>
     <h1>Un jeu de société pour deux joueurs</h1>
     <h1>Votre compte</h1>
   </header>
@@ -62,9 +62,9 @@ if (isset($_SESSION['username'])) {
       echo "<p><strong>Mot de passe :</strong> *****</p>";
       echo "<p><strong>Date d'inscription :</strong> {$_SESSION['registration_date']}</p>";
       ?>
-      <button onclick="window.location.href='change.php'">Modifier les informations</button>
+      <button onclick="window.location.href='set_infos_page.php'">Modifier les informations</button>
     </div>
-    <h2>Statistiques</h2> 
+    <h2>Statistiques</h2>
     <div>
       <?php
       echo "<p><strong>Nombre de parties :</strong> " . count($all_games) . "</p>";
@@ -92,8 +92,13 @@ if (isset($_SESSION['username'])) {
       echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
       echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
       ?>
-      <button class='red_buttons' onclick="window.location.href='../api/logout.php'">Deconnexion</button>
+      <button class='red_buttons' onclick="window.location.href='../api/logout_api.php'">Deconnexion</button>
     </div>
+    <?php
+    if ($_SESSION['is_admin']) {
+      echo "<button onclick=\"window.location.href='enroll_page.php'\">Creer un compte joueur</button>";
+    }
+    ?>
   </aside>
 </body>
 
