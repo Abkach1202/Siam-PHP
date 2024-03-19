@@ -1,5 +1,5 @@
 <?php
-if (isset($_GET['username'])) {
+if (isset($_POST['username'])) {
   // Connexion à la base de données SQLite
   try {
     $db = new PDO('sqlite:../datas/data_base.db');
@@ -11,7 +11,7 @@ if (isset($_GET['username'])) {
   // Préparation et exécution de la requête
   $query = "SELECT * FROM User WHERE Username = :username";
   $stmt = $db->prepare($query);
-  $stmt->bindValue(':username', $_GET['username'], SQLITE3_TEXT);
+  $stmt->bindValue(':username', $_POST['username'], PDO::PARAM_STR);
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
   // Renvoi de la réponse

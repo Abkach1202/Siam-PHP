@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS Game (
   game_ID INTEGER PRIMARY KEY AUTOINCREMENT,
   board TEXT,
   last_move TEXT,
-  is_over BOOLEAN,
   player1 TEXT,
   player2 TEXT,
   winner TEXT,

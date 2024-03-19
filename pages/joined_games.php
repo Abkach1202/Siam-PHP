@@ -14,11 +14,12 @@ if (isset($_SESSION['username'])) {
   // Exécution  et récupération des parties à jouer
   if ($_SESSION['is_admin'] == 1) {
     $query = "SELECT * FROM Game ORDER BY launch_date DESC";
+    $stmt = $db->prepare($query);
   } else {
     $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
   }
-  $stmt = $db->prepare($query);
-  $stmt->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
   $stmt->execute();
   $play_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -61,13 +62,13 @@ if (isset($_SESSION['username'])) {
     echo "</tr>";
     foreach ($play_results as $row) {
       echo "<tr>";
-      echo "<td>{$row['id']}</td>";
+      echo "<td>{$row['game_ID']}</td>";
       echo "<td>{$row['player1']}" . (($row['player1'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
       echo "<td>{$row['player2']}" . (($row['player2'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
       echo "<td>{$row['active_player']}</td>";
       echo "<td>{$row['winner']}</td>";
       echo "<td>{$row['launch_date']}</td>";
-      echo "<td><button onclick=\"window.location.href='game.php?id={$row['id']}'\">Rejoindre</button></td>";
+      echo "<td><button onclick=\"window.location.href='game.php?id={$row['game_ID']}'\">Rejoindre</button></td>";
       echo "</tr>";
     }
     echo "</table>";
@@ -75,14 +76,16 @@ if (isset($_SESSION['username'])) {
   </section>
   <aside>
     <button onclick="window.location.href='account.php'">Compte</button>
-    <?php
-    echo "<p><strong>Pseudo:</strong> {$_SESSION['username']}</p>";
-    echo "<p><strong>Nom:</strong> {$_SESSION['last_name']}</p>";
-    echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
-    echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
-    echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
-    ?>
-    <button class='red_buttons' onclick="window.location.href='../api/logout.php'">Deconnexion</button>
+    <div>
+      <?php
+      echo "<p><strong>Pseudo:</strong> {$_SESSION['username']}</p>";
+      echo "<p><strong>Nom:</strong> {$_SESSION['last_name']}</p>";
+      echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
+      echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
+      echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
+      ?>
+      <button class='red_buttons' onclick="window.location.href='../api/logout.php'">Deconnexion</button>
+    </div>
     </div>
   </aside>
 </body>

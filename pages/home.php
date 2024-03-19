@@ -19,11 +19,12 @@ if (isset($_SESSION['username'])) {
   // Exécution  et récupération des parties à jouer
   if ($_SESSION['is_admin'] == 1) {
     $query = "SELECT * FROM Game ORDER BY launch_date DESC LIMIT 5";
+    $stmt = $db->prepare($query);
   } else {
     $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC LIMIT 5";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
   }
-  $stmt = $db->prepare($query);
-  $stmt->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
   $stmt->execute();
   $play_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -68,9 +69,9 @@ if (isset($_SESSION['username'])) {
       echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Joueur actif</th><th>Gagnant</th></tr>";
       foreach ($play_results as $row) {
         echo "<tr>";
-        echo "<td>{$row['id']}</td>";
-        echo "<td>{$row['player1']}" . ($row['player1'] == $row['launcher']) ? "(créateur)" : "" . "</td>";
-        echo "<td>{$row['player2']}" . ($row['player2'] == $row['launcher']) ? "(créateur)" : "" . "</td>";
+        echo "<td>{$row['game_ID']}</td>";
+        echo "<td>{$row['player1']}" . (($row['player1'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
+        echo "<td>{$row['player2']}" . (($row['player2'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
         echo "<td>{$row['active_player']}</td>";
         echo "<td>{$row['winner']}</td>";
         echo "</tr>";
@@ -88,7 +89,7 @@ if (isset($_SESSION['username'])) {
       echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Date de lancement</th></tr>";
       foreach ($join_results as $row) {
         echo "<tr>";
-        echo "<td>{$row['id']}</td>";
+        echo "<td>{$row['game_ID']}</td>";
         echo "<td>{$row['player1']}</td>";
         echo "<td>{$row['player2']}</td>";
         echo "<td>{$row['launch_date']}</td>";
@@ -100,15 +101,15 @@ if (isset($_SESSION['username'])) {
     <div>
       <h2>Gestion de parties</h2>
       <div id="forms">
-        <form method="post">
+        <form method="post" action="../api/create_game.php" class="form">
           <select name="player">
-            <option value="player1">Joueur 1</option>
-            <option value="player2">Joueur 2</option>
+            <option value="1">Joueur 1</option>
+            <option value="2">Joueur 2</option>
           </select>
           <button type="submit">Creer une partie</button>
         </form>
-        <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1) {
-          echo "<button class='red_buttons'>Supprimer une partie</button>";
+        <?php if ($_SESSION['is_admin']) {
+          echo "<button class='red_buttons' onclick='window.location.href=\"delete_games.php\"'>Supprimer une partie</button>";
         } ?>
       </div>
     </div>

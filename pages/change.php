@@ -14,12 +14,12 @@ if (isset($_SESSION['username']) && isset($_POST['last_password'])) {
   // Récuperation du mot de passe
   $query = "SELECT password FROM User WHERE username=:username";
   $stmt = $db->prepare($query);
-  $stmt->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
+  $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
   $stmt->execute();
   $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
   // On fait le changement si le mot de passe est correct
-  if (password_verify($_POST['last_password'], $result['Password'])) {
+  if (password_verify($_POST['last_password'], $result['password'])) {
     // Les nouvelles informations
     $first_name = (isset($_POST['first_name']) && $_POST['first_name'] != "") ? $_POST['first_name'] : $_SESSION['first_name'];
     $last_name = (isset($_POST['last_name']) && $_POST['last_name'] != "") ? $_POST['last_name'] : $_SESSION['last_name'];
@@ -29,11 +29,11 @@ if (isset($_SESSION['username']) && isset($_POST['last_password'])) {
     // Préparation et exécution de la requête
     $query = "UPDATE User SET first_name=:first_name, last_name=:last_name, email=:email, password=:password WHERE username=:username";
     $stmt = $db->prepare($query);
-    $stmt->bindValue(':first_name', $first_name, SQLITE3_TEXT);
-    $stmt->bindValue(':last_name', $last_name, SQLITE3_TEXT);
-    $stmt->bindValue(':email', $email, SQLITE3_TEXT);
-    $stmt->bindValue(':password', $hashed_password, SQLITE3_TEXT);
-    $stmt->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
+    $stmt->bindValue(':first_name', $first_name, PDO::PARAM_STR);
+    $stmt->bindValue(':last_name', $last_name, PDO::PARAM_STR);
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+    $stmt->bindValue(':password', $hashed_password, PDO::PARAM_STR);
+    $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
     $stmt->execute();
     // Mise à jour de la session
     $_SESSION['first_name'] = $first_name;
@@ -68,7 +68,7 @@ if (isset($_SESSION['username']) && isset($_POST['last_password'])) {
   <section>
     <h2>Changer les information de compte</h2>
     <div id="forms">
-      <form action="change.php" method="post">
+      <form action="change.php" method="post" class="form">
         <p>Seul l'ancien mot de passe est obligatoire</p>
         <label for="last_name">Nom:</label>
         <input type="text" id="last_name" name="last_name" value="<?php echo $_SESSION['last_name'] ?>" />

@@ -1,10 +1,16 @@
 // Fonction pour vérifier si l'utilisateur existe déjà
-function checkUser() {
-  var username = document.getElementById("username").value;
-  return fetch("http://localhost:8080/api/projet-siam/check_user.php?username=" + username)
+async function checkUser() {
+  var data = new FormData();
+  data.append("username", document.getElementById("username").value);
+  var requestOptions = {
+    method: "POST",
+    body: data,
+  };
+  return fetch("http://localhost:8080/api/check_user.php", requestOptions)
     .then(response => response.text())
     .then(response => {
       // Si l'utilisateur existe déjà, on change la couleur de la bordure du champ
+      console.log(response);
       if (response == "true") {
         alert("Cet utilisateur existe déjà !");
         var input = document.getElementById("username");

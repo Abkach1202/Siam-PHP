@@ -14,7 +14,7 @@ if (!isset($_SESSION['username']) && isset($_POST['username'])) {
   // Préparation et exécution de la requête
   $query = "SELECT * FROM User WHERE Username = :username";
   $stmt = $db->prepare($query);
-  $stmt->bindValue(':username', $_POST['username'], SQLITE3_TEXT);
+  $stmt->bindValue(':username', $_POST['username'], PDO::PARAM_STR);
   $stmt->execute();
   // Récupération des résultats et remplissage de la session
   $result = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -1,2 +1,2 @@
 User (username, first_name, last_name, email, password, is_admin, registration_date)
-Game (game_ID, board, last_move, is_over, player1*, player2*, winner*, active_player*, launcher*, launch_date*)
+Game (game_ID, board, last_move, player1*, player2*, winner*, active_player*, launcher*, launch_date*)

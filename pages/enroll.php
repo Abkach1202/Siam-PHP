@@ -24,11 +24,11 @@ if (!isset($_SESSION['username']) && isset($_POST['username'])) {
   $query = "INSERT INTO User (username, first_name, last_name, email, password, is_admin, registration_date) 
       VALUES (:username, :first_name, :last_name, :email, :password, 0, datetime('now'))";
   $stmt = $db->prepare($query);
-  $stmt->bindValue(':username', $_POST['username'], SQLITE3_TEXT);
-  $stmt->bindValue(':first_name', $_POST['first_name'], SQLITE3_TEXT);
-  $stmt->bindValue(':last_name', $_POST['last_name'], SQLITE3_TEXT);
-  $stmt->bindValue(':email', $_POST['email'], SQLITE3_TEXT);
-  $stmt->bindValue(':password', $hashed_password, SQLITE3_TEXT);
+  $stmt->bindValue(':username', $_POST['username'], PDO::PARAM_STR);
+  $stmt->bindValue(':first_name', $_POST['first_name'], PDO::PARAM_STR);
+  $stmt->bindValue(':last_name', $_POST['last_name'], PDO::PARAM_STR);
+  $stmt->bindValue(':email', $_POST['email'], PDO::PARAM_STR);
+  $stmt->bindValue(':password', $hashed_password, PDO::PARAM_STR);
   $stmt->execute();
   // Fermeture de la connexion à la base de données
   $db = null;

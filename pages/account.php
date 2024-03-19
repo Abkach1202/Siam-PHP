@@ -14,7 +14,7 @@ if (isset($_SESSION['username'])) {
   // Exécution  et récupération des parties à jouer
   $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username";
   $stmt = $db->prepare($query);
-  $stmt->bindValue(':username', $_SESSION['username'], SQLITE3_TEXT);
+  $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
   $stmt->execute();
   $all_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -67,19 +67,18 @@ if (isset($_SESSION['username'])) {
     <h2>Statistiques</h2> 
     <div>
       <?php
-      echo "<p><strong>Parties jouées :</strong> " . count($all_games) . "</p>";
+      echo "<p><strong>Nombre de parties :</strong> " . count($all_games) . "</p>";
       $victories = 0;
       $not_finished = 0;
       foreach ($all_games as $game) {
-        if ($game['winner'] == $_SESSION['username']) {
+        if ($game['winner'] === $_SESSION['username']) {
           $victories++;
-        }
-        if ($game['is_over'] == 0) {
+        } else if ($game['winner'] === null) {
           $not_finished++;
         }
       }
       echo "<p><strong>Parties gagnées :</strong> $victories</p>";
-      echo "<p><strong>Parties perdues :</strong> " . (count($all_games) - $victories) . "</p>";
+      echo "<p><strong>Parties perdues :</strong> " . (count($all_games) - $not_finished - $victories) . "</p>";
       echo "<p><strong>Parties en cours :</strong> $not_finished</p>";
       ?>
     </div>

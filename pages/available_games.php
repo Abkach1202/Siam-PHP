@@ -53,11 +53,18 @@ if (isset($_SESSION['username'])) {
     echo "</tr>";
     foreach ($join_results as $row) {
       echo "<tr>";
-      echo "<td>{$row['id']}</td>";
-      echo "<td>{$row['player1']}" . (($row['player1'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
-      echo "<td>{$row['player2']}" . (($row['player2'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
+      echo "<td>{$row['game_ID']}</td>";
+      echo "<td>{$row['player1']}" . (($row['player1'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
+      echo "<td>{$row['player2']}" . (($row['player2'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
       echo "<td>{$row['launch_date']}</td>";
-      echo "<td><button onclick=\"window.location.href='game.php?id={$row['id']}'\">Rejoindre</button></td>";
+      echo "<td>";
+      echo "<form action='../api/join_game.php' method='post'>";
+      echo "<input type='hidden' name='id' value='{$row['game_ID']}'>";
+      echo "<input type='hidden' name='player' value='" . (($row['player1'] === null) ? 1 : 2) . "'>";
+      echo "<input type='hidden' name='redirect' value='" . ($row['launcher'] === $_SESSION['username']) . "'>";
+      echo "<button type='submit'>Rejoindre</button>";
+      echo "</form>";
+      echo "</td>";
       echo "</tr>";
     }
     echo "</table>";

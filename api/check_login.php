@@ -9,13 +9,13 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     exit();
   }
   // Préparation et exécution de la requête
-  $query = "SELECT * FROM User WHERE Username = :username";
+  $query = "SELECT * FROM User WHERE username = :username";
   $stmt = $db->prepare($query);
-  $stmt->bindValue(':username', $_POST['username'], SQLITE3_TEXT);
+  $stmt->bindValue(':username', $_POST['username'], PDO::PARAM_STR);
   $stmt->execute();
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
   // Renvoi de la réponse
-  if ($user != FALSE && password_verify($_POST['password'], $user['Password'])) {
+  if ($user != FALSE && password_verify($_POST['password'], $user['password'])) {
     echo "true";
   } else {
     echo "false";

@@ -1,7 +1,7 @@
 <?php
 // Création ou récupération de la session
 session_start();
-// Recuperation des parties à jouer et à rejoindre
+// Redirection si le joueur n'est pas connecté
 if (!isset($_SESSION['username'])) {
   header('Location: login.php');
   exit();
@@ -67,7 +67,7 @@ if (!isset($_SESSION['username'])) {
       <li>Un animal peut pousser un rocher, deux animaux orientés dans la bonne direction peuvent pousser deux rochers, et trois animaux orientés dans la bonne direction peuvent pousser trois rochers(fig. 4a, 4b, 4c).</li>
       <li>Un animal ne peut pousser un autre animal qui lui fait face (peu importe à qui appartient l'animal). En effet, rhinos et éléphants ont la même force de poussée ; pour pouvoir pousser, il faut qu'il y ait donc une majorité d'animaux qui poussent dans la même direction.</li>
     </ul>
-    <h4>Précision :</h4> 
+    <h4>Précision :</h4>
     <p>Un de vos animaux peut empêcher votre poussée, un animal adverse peut aider votre poussée(fig. 5a, 5b, 5c).</p>
     <ul>
       <li>Un animal peut pousser autant d'animaux que possible si ceux-ci ne sont pas orientés dans la direction opposée(fig. 6a, 6b).</li>
@@ -85,9 +85,6 @@ if (!isset($_SESSION['username'])) {
     <img src="../images/rules_siam.jpg" alt="régles du jeu Siam">
     <p>AUTHOR : Didier Dhorbait - <a href="http://www.ferti-games.com">www.ferti-games.com</a></p>
   </section>
-
-
-  
   <aside>
     <button onclick="window.location.href='account.php'">Compte</button>
     <div>
@@ -97,8 +94,8 @@ if (!isset($_SESSION['username'])) {
       echo "<p><strong>Prénom:</strong> {$_SESSION['first_name']}</p>";
       echo "<p><strong>Email:</strong> {$_SESSION['email']}</p>";
       echo "<p><strong>Date d'inscription:</strong> {$_SESSION['registration_date']}</p>";
-      echo "<button class='red_buttons' onclick=\"window.location.href='logout.php'\">Deconnexion</button>";
       ?>
+      <button class='red_buttons' onclick="window.location.href='../api/logout.php'">Deconnexion</button>
     </div>
   </aside>
 </body>

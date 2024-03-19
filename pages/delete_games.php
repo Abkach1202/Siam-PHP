@@ -55,13 +55,17 @@ if (isset($_SESSION['username'])) {
     echo "</tr>";
     foreach ($games as $row) {
       echo "<tr>";
-      echo "<td>{$row['id']}</td>";
+      echo "<td>{$row['game_ID']}</td>";
       echo "<td>{$row['player1']}" . (($row['player1'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
       echo "<td>{$row['player2']}" . (($row['player2'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
       echo "<td>{$row['active_player']}</td>";
       echo "<td>{$row['winner']}</td>";
       echo "<td>{$row['launch_date']}</td>";
-      echo "<td><button class='red_buttons' onclick=\"window.location.href='../api.delete.php?id={$row['id']}'\">Supprimer</button></td>";
+      echo "<td>";
+      echo "<form action='../api/delete_game.php' method='post'>";
+      echo "<input type='hidden' name='id' value='{$row['game_ID']}'>";
+      echo "<button type='submit' class='red_buttons'>Supprimer</button></td>";
+      echo "</form>";
       echo "</tr>";
     }
     echo "</table>";
