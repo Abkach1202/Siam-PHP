@@ -6,7 +6,7 @@ async function checkUser() {
     method: "POST",
     body: data,
   };
-  return fetch("http://localhost:8080/api/check_user.php", requestOptions)
+  return fetch("../api/check_user.php", requestOptions)
     .then(response => response.text())
     .then(response => {
       // Si l'utilisateur existe déjà, on change la couleur de la bordure du champ

@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "POST",
       body: datas,
     };
-    const response = await fetch("http://localhost:8080/api/check_action.php", requestOptions);
+    const response = await fetch("../api/check_action.php", requestOptions);
     return response.json();
   }
 
