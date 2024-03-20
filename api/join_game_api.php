@@ -26,7 +26,7 @@ if (isset($_POST['id']) && isset($_SESSION['username'])) {
     }
 
     // Préparation et exécution de la requête
-    if ($_POST['player'] == 1) {
+    if ($_POST['player'] === "1") {
       $query = "UPDATE Game SET player1=:username active_player=:username WHERE game_ID=:id";
     } else {
       $query = "UPDATE Game SET player2=:username WHERE game_ID=:id";
@@ -38,7 +38,7 @@ if (isset($_POST['id']) && isset($_SESSION['username'])) {
     // Fermeture de la connexion à la base de données
     $db = null;
   }
-  header('Location: ../pages/game_page.php?id=' . $_POST['id']);
+  header('Location: ../pages/game_page.php?id=' . $_POST['id'] . '#game_canvas');
 } else {
   header('Location: ../pages/home_page.php');
 }

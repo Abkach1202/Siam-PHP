@@ -7,7 +7,7 @@ if (isset($_POST['action'])) {
   // On recupère le plateau, le joueur actuel et le joueur actif
   $board = json_decode($_POST['board']);
   // Si l'action est d'ajouter une pièce
-  if ($_POST['action'] == 'add') {
+  if ($_POST['action'] === 'add') {
     $valid_cases = array();
     // On parcours les bords du plateau pour garder que celles qui sont valides
     for ($i = 0; $i < DIM; $i++) {
@@ -20,7 +20,7 @@ if (isset($_POST['action'])) {
     echo json_encode($valid_cases);
   }
   // Si l'action est de déplacer une pièce
-  else if ($_POST['action'] == 'move') {
+  else if ($_POST['action'] === 'move') {
     $valid_cases = array();
     $row = $_POST['row'];
     $col = $_POST['col'];
@@ -67,14 +67,14 @@ function get_direction($case)
 // Fonction pour récupérer l'incrémentation de la ligne en fonction de la direction
 function get_inc_row($direction)
 {
-  if ($direction % 2 == 0) return $direction - 1;
+  if ($direction % 2 === 0) return $direction - 1;
   else return 0;
 }
 
 // Fonction pour récupérer l'incrémentation de la colonne en fonction de la direction
 function get_inc_col($direction)
 {
-  if ($direction % 2 == 0) return 0;
+  if ($direction % 2 === 0) return 0;
   else return $direction - 2;
 }
 
@@ -91,9 +91,9 @@ function check_push($board, $row, $col, $direction)
     // On met à jour la force et le nombre de roches
     if (is_rock($board[$row][$col])) {
       $rocks++;
-    } else if (get_direction($board[$row][$col]) == $direction) {
+    } else if (get_direction($board[$row][$col]) === $direction) {
       $force++;
-    } else if (get_direction($board[$row][$col]) == $inverse_direction) {
+    } else if (get_direction($board[$row][$col]) === $inverse_direction) {
       $force--;
     }
     // Faux si la force est négative ou si le nombre de roches dépasse la force

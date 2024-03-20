@@ -13,15 +13,15 @@ if (isset($_SESSION['username'])) {
   }
   // Exécution  et récupération des parties à jouer
   if ($_SESSION['is_admin'] == 1) {
-    $query = "SELECT * FROM Game ORDER BY launch_date DESC";
+    $query = "SELECT * FROM Game WHERE player1 IS NOT NULL AND player2 IS NOT NULL ORDER BY launch_date DESC LIMIT 5";
     $stmt = $db->prepare($query);
   } else {
-    $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC";
+    $query = "SELECT * FROM Game WHERE (player1=:username OR player2=:username) AND player1 IS NOT NULL AND player2 IS NOT NULL ORDER BY launch_date DESC LIMIT 5";
     $stmt = $db->prepare($query);
     $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
   }
   $stmt->execute();
-  $play_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   // Fermeture de la connexion à la base de données
   $db = null;
@@ -50,7 +50,7 @@ if (isset($_SESSION['username'])) {
   <section>
     <h2>Liste des parties en cours</h2>
     <?php
-    if (empty($play_results)) {
+    if (empty($result)) {
       echo "<h3>Aucune partie à jouer</h3>";
     } else {
       echo "<table>";
@@ -63,15 +63,15 @@ if (isset($_SESSION['username'])) {
       echo "<th>Date de lancement</th>";
       echo "<th>Rejoindre</th>";
       echo "</tr>";
-      foreach ($play_results as $row) {
+      foreach ($result as $row) {
         echo "<tr>";
         echo "<td>{$row['game_ID']}</td>";
-        echo "<td>{$row['player1']}" . (($row['player1'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
-        echo "<td>{$row['player2']}" . (($row['player2'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
+        echo "<td>{$row['player1']}" . (($row['player1'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
+        echo "<td>{$row['player2']}" . (($row['player2'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
         echo "<td>{$row['active_player']}</td>";
         echo "<td>{$row['winner']}</td>";
         echo "<td>{$row['launch_date']}</td>";
-        echo "<td><button onclick=\"window.location.href='game_page.php?id={$row['game_ID']}'\">Rejoindre</button></td>";
+        echo "<td><button onclick=\"window.location.href='game_page.php?id={$row['game_ID']}#game_canvas'\">Jouer</button></td>";
         echo "</tr>";
       }
       echo "</table>";

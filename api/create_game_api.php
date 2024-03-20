@@ -24,7 +24,7 @@ if (isset($_SESSION['username']) && isset($_POST['player'])) {
   VALUES (:board, :player1, :player2, :active_player, :launcher, datetime('now'))";
   $stmt = $db->prepare($query);
   $stmt->bindValue(':board', json_encode($board), PDO::PARAM_STR);
-  if ($_POST['player'] == 1) {
+  if ($_POST['player'] === "1") {
     $stmt->bindValue(':player1', $_SESSION['username'], PDO::PARAM_STR);
     $stmt->bindValue(':player2', null, PDO::PARAM_NULL);
     $stmt->bindValue(':active_player', $_SESSION['username'], PDO::PARAM_STR);

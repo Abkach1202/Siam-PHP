@@ -56,8 +56,8 @@ if (isset($_SESSION['username']) && $_SESSION['is_admin']) {
     foreach ($games as $row) {
       echo "<tr>";
       echo "<td>{$row['game_ID']}</td>";
-      echo "<td>{$row['player1']}" . (($row['player1'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
-      echo "<td>{$row['player2']}" . (($row['player2'] == $row['launcher']) ? "(créateur)" : "") . "</td>";
+      echo "<td>{$row['player1']}" . (($row['player1'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
+      echo "<td>{$row['player2']}" . (($row['player2'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
       echo "<td>{$row['active_player']}</td>";
       echo "<td>{$row['winner']}</td>";
       echo "<td>{$row['launch_date']}</td>";

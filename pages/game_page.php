@@ -93,9 +93,9 @@ if (isset($_GET['id']) && isset($_SESSION['username'])) {
         <h2>
           <?php
           if ($_SESSION['is_admin']) {
-            echo $result['player1'] == $result['active_player'] ? $result['player2'] : $result['player1'];
+            echo $result['player1'] === $result['active_player'] ? $result['player2'] : $result['player1'];
           } else {
-            echo $result['player1'] == $_SESSION['username'] ? $result['player2'] : $result['player1'];
+            echo $result['player1'] === $_SESSION['username'] ? $result['player2'] : $result['player1'];
           }
           ?>
         </h2>

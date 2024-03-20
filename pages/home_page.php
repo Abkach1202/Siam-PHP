@@ -18,10 +18,10 @@ if (isset($_SESSION['username'])) {
 
   // Exécution  et récupération des parties à jouer
   if ($_SESSION['is_admin'] == 1) {
-    $query = "SELECT * FROM Game ORDER BY launch_date DESC LIMIT 5";
+    $query = "SELECT * FROM Game WHERE player1 IS NOT NULL AND player2 IS NOT NULL ORDER BY launch_date DESC LIMIT 5";
     $stmt = $db->prepare($query);
   } else {
-    $query = "SELECT * FROM Game WHERE player1=:username OR player2=:username ORDER BY launch_date DESC LIMIT 5";
+    $query = "SELECT * FROM Game WHERE (player1=:username OR player2=:username) AND player1 IS NOT NULL AND player2 IS NOT NULL ORDER BY launch_date DESC LIMIT 5";
     $stmt = $db->prepare($query);
     $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
   }
@@ -77,7 +77,7 @@ if (isset($_SESSION['username'])) {
           echo "<td>{$row['player2']}" . (($row['player2'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
           echo "<td>{$row['active_player']}</td>";
           echo "<td>{$row['winner']}</td>";
-          echo "<td><button onclick=\"window.location.href='game_page.php?id={$row['game_ID']}'\">Rejoindre</button></td>";
+          echo "<td><button onclick=\"window.location.href='game_page.php?id={$row['game_ID']}#game_canvas'\">Jouer</button></td>";
           echo "</tr>";
         }
         echo "</table>";

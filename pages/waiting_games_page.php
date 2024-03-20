@@ -14,7 +14,7 @@ if (isset($_SESSION['username'])) {
   // Exécution  et récupération des parties à rejoindre
   $query = "SELECT * FROM Game WHERE player1 IS NULL OR player2 IS NULL ORDER BY launch_date DESC LIMIT 5";
   $stmt = $db->query($query);
-  $join_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   // Fermeture de la connexion à la base de données
   $db = null;
@@ -43,7 +43,7 @@ if (isset($_SESSION['username'])) {
   <section>
     <h2>Liste des parties à rejoindre</h2>
     <?php
-    if (empty($join_results)) {
+    if (empty($result)) {
       echo "<h3>Aucune partie à rejoindre</h3>";
     } else {
       echo "<table>";
@@ -54,7 +54,7 @@ if (isset($_SESSION['username'])) {
       echo "<th>Date de lancement</th>";
       echo "<th>Rejoindre</th>";
       echo "</tr>";
-      foreach ($join_results as $row) {
+      foreach ($result as $row) {
         echo "<tr>";
         echo "<td>{$row['game_ID']}</td>";
         echo "<td>{$row['player1']}" . (($row['player1'] === $row['launcher']) ? "(créateur)" : "") . "</td>";

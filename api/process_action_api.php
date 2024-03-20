@@ -24,18 +24,18 @@ if (isset($_POST['action'])) {
   $cell_src = json_decode($_POST['source']);
   $cell_dst = json_decode($_POST['destination']);
   $piece = "";
-  
+
   // Exécution de l'action
-  if ($_POST['action'] == "turn") {
+  if ($_POST['action'] === "turn") {
     $board[$cell_src[0]][$cell_src[1]] = $_POST['player_number'] . $_POST['direction'];
     $last_move = json_encode($cell_src);
-  } else if ($_POST['action'] == "remove") {
+  } else if ($_POST['action'] === "remove") {
     $board[$cell_src[0]][$cell_src[1]] = "";
     $last_move = json_encode($cell_src);
-  } else if ($_POST['action'] == "add") {
+  } else if ($_POST['action'] === "add") {
     $piece = add_piece($board, $cell_dst[0], $cell_dst[1], $_POST['player_number'], $_POST['direction']);
     $last_move = json_encode($cell_dst);
-  } else if ($_POST['action'] == "move") {
+  } else if ($_POST['action'] === "move") {
     $direction = get_direction($cell_dst[0] - $cell_src[0], $cell_dst[1] - $cell_src[1]);
     $piece = move_piece($board, $cell_src[0], $cell_src[1], $_POST['direction'], $direction);
     $last_move = json_encode($cell_dst);
@@ -62,7 +62,7 @@ if (isset($_POST['action'])) {
   // Fermeture de la connexion à la base de données
   $db = null;
   // Redirection vers la page de la partie
-  header('Location: ../pages/game_page.php?id=' . $_POST['game_id']);
+  header('Location: ../pages/game_page.php?id=' . $_POST['game_id'] . '#game_canvas');
 }
 
 // Fonction pour vérifier si les coordonnées sont valides
@@ -74,7 +74,7 @@ function valid_coordinates($row, $col)
 // Fonction pour vérifier si la case est vide
 function is_empty($case)
 {
-  return $case == "";
+  return $case === "";
 }
 
 // Fonction pour vérifier si la case est une roche
@@ -86,21 +86,21 @@ function is_rock($case)
 // Fonction pour récupérer l'incrémentation de la ligne en fonction de la direction
 function get_inc_row($direction)
 {
-  if ($direction % 2 == 0) return $direction - 1;
+  if ($direction % 2 === 0) return $direction - 1;
   else return 0;
 }
 
 // Fonction pour récupérer l'incrémentation de la colonne en fonction de la direction
 function get_inc_col($direction)
 {
-  if ($direction % 2 == 0) return 0;
+  if ($direction % 2 === 0) return 0;
   else return $direction - 2;
 }
 
 // Fonction pour calculer la direction à partir de l'incrémentation de la ligne et de la colonne
 function get_direction($inc_row, $inc_col)
 {
-  if ($inc_row == 0) return $inc_col + 2;
+  if ($inc_row === 0) return $inc_col + 2;
   else return $inc_row + 1;
 }
 
