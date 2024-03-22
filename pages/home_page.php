@@ -11,23 +11,39 @@ if (isset($_SESSION['username'])) {
     $db = null;
     exit();
   }
-  // Exécution  et récupération des parties à rejoindre
-  $query = "SELECT * FROM Game WHERE player1 IS NULL OR player2 IS NULL ORDER BY launch_date DESC LIMIT 5";
-  $stmt = $db->query($query);
-  $join_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // Exécution  et récupération des parties à jouer
+  // Exécution et récupération des parties en cours
   if ($_SESSION['is_admin'] == 1) {
-    $query = "SELECT * FROM Game WHERE player1 IS NOT NULL AND player2 IS NOT NULL ORDER BY launch_date DESC LIMIT 5";
+    $query = "SELECT * FROM Game WHERE player1 IS NOT NULL AND player2 IS NOT NULL AND winner IS NULL
+    ORDER BY launch_date DESC LIMIT 5";
     $stmt = $db->prepare($query);
   } else {
-    $query = "SELECT * FROM Game WHERE (player1=:username OR player2=:username) AND player1 IS NOT NULL AND player2 IS NOT NULL ORDER BY launch_date DESC LIMIT 5";
+    $query = "SELECT * FROM Game WHERE (player1=:username OR player2=:username) AND player1 IS NOT NULL
+    AND player2 IS NOT NULL AND winner IS NULL ORDER BY launch_date DESC LIMIT 5";
     $stmt = $db->prepare($query);
     $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
   }
   $stmt->execute();
-  $play_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+  $in_progress_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  
+  // Exécution et récupération des parties terminée
+  if ($_SESSION['is_admin'] == 1) {
+    $query = "SELECT * FROM Game WHERE winner IS NOT NULL
+    ORDER BY launch_date DESC LIMIT 5";
+    $stmt = $db->prepare($query);
+  } else {
+    $query = "SELECT * FROM Game WHERE (player1=:username OR player2=:username) AND winner IS NOT NULL ORDER BY launch_date DESC LIMIT 5";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
+  }
+  $stmt->execute();
+  $finished_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  
+  // Exécution et récupération des parties à rejoindre
+  $query = "SELECT * FROM Game WHERE player1 IS NULL OR player2 IS NULL ORDER BY launch_date DESC LIMIT 5";
+  $stmt = $db->query($query);
+  $waiting_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  
   // Fermeture de la connexion à la base de données
   $db = null;
 } else {
@@ -65,12 +81,12 @@ if (isset($_SESSION['username'])) {
         <button class="small_buttons" onclick="window.location.href='in_progress_games_page.php'">Voir tout</button>
       </h2>
       <?php
-      if (empty($play_results)) {
+      if (empty($in_progress_games)) {
         echo "<p>Aucune partie en cours</p>";
       } else {
         echo "<table>";
         echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Joueur actif</th><th>Gagnant</th><th>Rejoindre</th></tr>";
-        foreach ($play_results as $row) {
+        foreach ($in_progress_games as $row) {
           echo "<tr>";
           echo "<td>{$row['game_ID']}</td>";
           echo "<td>{$row['player1']}" . (($row['player1'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
@@ -90,12 +106,12 @@ if (isset($_SESSION['username'])) {
         <button class="small_buttons" onclick="window.location.href='waiting_games_page.php'">Voir tout</button>
       </h2>
       <?php
-      if (empty($join_results)) {
+      if (empty($waiting_games)) {
         echo "<p>Aucune partie à rejoindre</p>";
       } else {
         echo "<table>";
         echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Date de lancement</th><th>Rejoindre</th></tr>";
-        foreach ($join_results as $row) {
+        foreach ($waiting_games as $row) {
           echo "<tr>";
           echo "<td>{$row['game_ID']}</td>";
           echo "<td>{$row['player1']}</td>";
@@ -110,6 +126,31 @@ if (isset($_SESSION['username'])) {
           echo "</form>";
           echo "</td>";
 
+          echo "</tr>";
+        }
+        echo "</table>";
+      }
+      ?>
+    </div>
+    <div>
+      <h2>
+        Parties terminées
+        <button class="small_buttons" onclick="window.location.href='finished_games_page.php'">Voir tout</button>
+      </h2>
+      <?php
+      if (empty($finished_games)) {
+        echo "<p>Aucune partie terminée</p>";
+      } else {
+        echo "<table>";
+        echo "<tr><th>Partie</th><th>Joueur 1</th><th>Joueur 2</th><th>Joueur actif</th><th>Gagnant</th><th>Rejoindre</th></tr>";
+        foreach ($finished_games as $row) {
+          echo "<tr>";
+          echo "<td>{$row['game_ID']}</td>";
+          echo "<td>{$row['player1']}" . (($row['player1'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
+          echo "<td>{$row['player2']}" . (($row['player2'] === $row['launcher']) ? "(créateur)" : "") . "</td>";
+          echo "<td>{$row['active_player']}</td>";
+          echo "<td>{$row['winner']}</td>";
+          echo "<td><button onclick=\"window.location.href='game_page.php?id={$row['game_ID']}#game_canvas'\">Voir</button></td>";
           echo "</tr>";
         }
         echo "</table>";

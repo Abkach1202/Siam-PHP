@@ -12,7 +12,7 @@ if (isset($_SESSION['username'])) {
     exit();
   }
   // Exécution  et récupération des parties à rejoindre
-  $query = "SELECT * FROM Game WHERE player1 IS NULL OR player2 IS NULL ORDER BY launch_date DESC LIMIT 5";
+  $query = "SELECT * FROM Game WHERE player1 IS NULL OR player2 IS NULL ORDER BY launch_date DESC";
   $stmt = $db->query($query);
   $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

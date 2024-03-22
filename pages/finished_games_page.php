@@ -13,11 +13,10 @@ if (isset($_SESSION['username'])) {
   }
   // Exécution  et récupération des parties à jouer
   if ($_SESSION['is_admin'] == 1) {
-    $query = "SELECT * FROM Game WHERE player1 IS NOT NULL AND player2 IS NOT NULL AND winner IS NULL ORDER BY launch_date DESC";
+    $query = "SELECT * FROM Game WHERE winner IS NOT NULL ORDER BY launch_date DESC";
     $stmt = $db->prepare($query);
   } else {
-    $query = "SELECT * FROM Game WHERE (player1=:username OR player2=:username) AND player1 IS NOT NULL AND player2 IS NOT NULL
-    AND winner IS NULL ORDER BY launch_date DESC";
+    $query = "SELECT * FROM Game WHERE (player1=:username OR player2=:username) AND winner IS NOT NULL ORDER BY launch_date DESC";
     $stmt = $db->prepare($query);
     $stmt->bindValue(':username', $_SESSION['username'], PDO::PARAM_STR);
   }
@@ -38,7 +37,7 @@ if (isset($_SESSION['username'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parties en cours</title>
+  <title>Parties terminées</title>
   <link rel="stylesheet" href="../styles/style2.css">
 </head>
 
@@ -46,10 +45,10 @@ if (isset($_SESSION['username'])) {
   <header>
     <a href="home_page.php"><img src="../images/siam.jpeg" alt="image du jeu Siam"></a>
     <h1>Un jeu de société pour deux joueurs</h1>
-    <h1>Parties en cours</h1>
+    <h1>Parties terminées</h1>
   </header>
   <section>
-    <h2>Liste des parties en cours</h2>
+    <h2>Liste des parties terminées</h2>
     <?php
     if (empty($result)) {
       echo "<h3>Aucune partie à jouer</h3>";
@@ -72,7 +71,7 @@ if (isset($_SESSION['username'])) {
         echo "<td>{$row['active_player']}</td>";
         echo "<td>{$row['winner']}</td>";
         echo "<td>{$row['launch_date']}</td>";
-        echo "<td><button onclick=\"window.location.href='game_page.php?id={$row['game_ID']}#game_canvas'\">Jouer</button></td>";
+        echo "<td><button onclick=\"window.location.href='game_page.php?id={$row['game_ID']}#game_canvas'\">Voir</button></td>";
         echo "</tr>";
       }
       echo "</table>";

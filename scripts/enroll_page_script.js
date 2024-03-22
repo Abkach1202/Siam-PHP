@@ -4,7 +4,7 @@ async function checkUser() {
   data.append("username", document.getElementById("username").value);
   var requestOptions = {
     method: "POST",
-    body: data,
+    body: data
   };
   return fetch("../api/check_user_api.php", requestOptions)
     .then(response => response.text())
