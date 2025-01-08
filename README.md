@@ -1,4 +1,4 @@
-# Hitori
+# SIAM
 
 * **University** : University of Artois
 * **School** :  Jean Perrin Faculty
@@ -8,4 +8,4 @@
 
 ## Description
 
-Implementation of the hitori game in C programming language.
+Implementation of the Siam game in Web programming languages.
